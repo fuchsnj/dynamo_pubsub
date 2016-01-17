@@ -7,7 +7,7 @@ use aws_dynamodb::{DynamoDb, Table};
 fn it_works() {
 }
 
-struct Subscription{
+pub struct Subscription{
 	sub: pubsub::Subscription
 }
 impl Subscription{
@@ -18,25 +18,25 @@ impl Subscription{
 	}
 }
 
-struct SubActivator{
+pub struct SubActivator{
 	activator: pubsub::SubActivator
 }
 impl SubActivator{
 	pub fn activate<F>(self, func: F) -> Subscription
 	where F: FnMut(String) + 'static + Send{
 		Subscription{
-			sub: self.activate(func)
+			sub: self.activator.activate(func)
 		}
 	}
 }
 
 
-struct PubSub{
+pub struct PubSub{
 	table: Table,
 	pubsub: pubsub::PubSub
 }
 impl PubSub{
-	pub fn new(table: Table, domain: String, num_threads: usize) -> PubSub{
+	pub fn new(table: Table, domain: &str, num_threads: usize) -> PubSub{
 		PubSub{
 			table: table,
 			pubsub: pubsub::PubSub::new(num_threads)
